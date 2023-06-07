@@ -12,8 +12,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_528_231_224) do
+ActiveRecord::Schema[7.0].define(version: 20_230_529_044_806) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension 'pgcrypto'
   enable_extension 'plpgsql'
 
   create_table 'chat_channels', force: :cascade do |t|
@@ -21,6 +22,7 @@ ActiveRecord::Schema[7.0].define(version: 20_230_528_231_224) do
     t.boolean 'archived'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
+    t.uuid 'uuid', default: -> { 'gen_random_uuid()' }
     t.index ['name'], name: 'index_chat_channels_on_name', unique: true
   end
 end

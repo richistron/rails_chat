@@ -3,6 +3,7 @@
 module Chat
   class Channel < ApplicationRecord
     validates_presence_of :name
+    validates_uniqueness_of :name
     scope :all_active, -> { where('archived is not ?', true) }
 
     def archive!

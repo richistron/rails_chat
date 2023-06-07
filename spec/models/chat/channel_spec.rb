@@ -12,10 +12,13 @@ describe Chat::Channel, type: :model do
       expect(chat_channel.errors).to have_key(:name)
     end
 
+    # TODO, break into 1 assertions
     it 'name is unique' do
       expect(chat_channel.save).to be_truthy
       duplicated_channel = Chat::Channel.new name: chat_channel.name
-      expect { duplicated_channel.save }.to raise_exception(ActiveRecord::RecordNotUnique)
+      expect(duplicated_channel.valid?).to be_falsey
+      expect(duplicated_channel.errors).to have_key(:name)
+      expect(duplicated_channel.errors.first.type).to eq(:taken)
     end
   end
 
@@ -26,6 +29,7 @@ describe Chat::Channel, type: :model do
       expect(chat_channel.archived).to be_falsey
     end
 
+    # TODO rename method as soft_delete
     it 'archive!' do
       expect(chat_channel.archive!).to be_truthy
       expect(chat_channel.archived).to be_truthy
