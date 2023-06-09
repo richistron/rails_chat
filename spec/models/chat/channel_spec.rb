@@ -29,7 +29,7 @@ describe Chat::Channel, type: :model do
       expect(chat_channel.archived).to be_falsey
     end
 
-    # TODO rename method as soft_delete
+    # TODO, rename method as soft_delete
     it 'archive!' do
       expect(chat_channel.archive!).to be_truthy
       expect(chat_channel.archived).to be_truthy

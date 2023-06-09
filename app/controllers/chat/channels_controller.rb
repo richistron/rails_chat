@@ -12,7 +12,7 @@ module Chat
     def create
       new_channel = Chat::Channel.new channel_params
       if new_channel.save
-        render status: :ok, json: serialize(new_channel.reload)
+        render status: :created, json: serialize(new_channel.reload)
       else
         render status: :bad_request, json: { errors: new_channel.errors }
       end

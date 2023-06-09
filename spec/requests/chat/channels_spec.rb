@@ -3,6 +3,11 @@
 require 'rails_helper'
 
 describe Chat::ChannelsController, type: :request do
+  def included_fields(chat_channel)
+    expect(chat_channel).to include('uuid', 'name')
+    expect(chat_channel).not_to include('id', 'created_at', 'updated_at')
+  end
+
   context 'GET /index' do
     before do
       create :chat_channel
@@ -24,16 +29,45 @@ describe Chat::ChannelsController, type: :request do
     end
 
     it 'expected fields' do
-      expect(body['channels'].first).to include('uuid', 'name')
-    end
-
-    it 'excluded fields' do
-      expect(body['channels'].first).not_to include('id', 'created_at', 'updated_at')
+      included_fields body['channels'].first
     end
   end
 
-  context 'GET /create' do
-    pending 'should TODO'
+  context 'POST /create' do
+    context 'success' do
+      before do
+        post chat_channels_path, params: { channel: { name: 'Memes' } }
+      end
+
+      it '201 status' do
+        expect(@response).to have_http_status(201)
+      end
+
+      context 'response' do
+        let(:body) { JSON.parse @response.body }
+
+        it 'included fields' do
+          included_fields body
+        end
+      end
+    end
+
+    context 'invalid request' do
+      context 'invalid params' do
+        before do
+          post chat_channels_path, params: { channel: { foo: 'bar' } }
+        end
+        let(:body) { JSON.parse(@response.body) }
+
+        it '400' do
+          expect(@response).to have_http_status(400)
+        end
+
+        it 'name is required' do
+          expect(body['errors']).to have_key('name')
+        end
+      end
+    end
   end
 
   context 'GET /show' do
@@ -60,12 +94,8 @@ describe Chat::ChannelsController, type: :request do
           expect(body['uuid']).to eq(chat_channel.uuid)
         end
 
-        it 'allowed fields' do
-          expect(body).to include('uuid', 'name')
-        end
-
-        it 'not allowed fields' do
-          expect(body).not_to include('id', 'created_at', 'updated_at')
+        it 'included fields' do
+          included_fields body
         end
       end
     end
