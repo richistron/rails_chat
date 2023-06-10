@@ -6,6 +6,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   namespace :chat do
-    resources :channels, only: %i[index create show update]
+    resources :channels
   end
 end

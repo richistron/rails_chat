@@ -6,9 +6,9 @@ module Chat
     validates_uniqueness_of :name
     scope :all_active, -> { where('archived is not ?', true) }
 
-    def archive!
+    def soft_delete
       self.archived = true
-      save!
+      save
     end
   end
 end

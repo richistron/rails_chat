@@ -2,7 +2,7 @@
 
 module Chat
   class ChannelsController < ApplicationController
-    before_action :channel, only: %i[show update]
+    before_action :channel, only: %i[show update delete]
 
     def index
       channels ||= Chat::Channel.all_active.limit(10)
@@ -38,12 +38,19 @@ module Chat
       render status: :bad_request, json: { error: 'Something went wrong' }
     end
 
-    # TODO, add delete method
+    def destroy
+      # TODO, only allow admins to archive channels
+      if channel.soft_delete
+        render status: :ok
+      else
+        render status: :bad_request
+      end
+    end
 
     private
 
     def channel
-      @channel ||= Chat::Channel.find_by_uuid channel_uuid
+      @channel ||= Chat::Channel.all_active.find_by_uuid channel_uuid
     end
 
     def channel_params

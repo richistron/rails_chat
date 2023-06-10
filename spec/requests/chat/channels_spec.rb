@@ -160,4 +160,31 @@ describe Chat::ChannelsController, type: :request do
       end
     end
   end
+
+  context 'DELETE /delete' do
+    let(:uuid) do
+      channel = create(:chat_channel)
+      channel.reload
+      channel.uuid
+    end
+
+    before { delete chat_channel_path(uuid) }
+
+    it 'status 200' do
+      expect(@response).to have_http_status(200)
+    end
+
+    it 'channel has been soft deleted' do
+      channel = Chat::Channel.find_by_uuid uuid
+      expect(channel.archived).to be_truthy
+    end
+
+    context 'does not returns deleted items anymore' do
+      before { get chat_channel_path(uuid) }
+
+      it 'not found' do
+        expect(@response).to have_http_status(404)
+      end
+    end
+  end
 end
