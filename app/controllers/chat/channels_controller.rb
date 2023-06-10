@@ -2,7 +2,7 @@
 
 module Chat
   class ChannelsController < ApplicationController
-    before_action :channel, only: [:show]
+    before_action :channel, only: %i[show update]
 
     def index
       channels ||= Chat::Channel.all_active.limit(10)
@@ -28,8 +28,17 @@ module Chat
       end
     end
 
+    def update
+      if channel.update channel_params
+        render status: :ok, json: serialize(channel)
+      else
+        render status: :bad_request, json: { errors: channel.errors }
+      end
+    rescue StandardError
+      render status: :bad_request, json: { error: 'Something went wrong' }
+    end
+
     # TODO, add delete method
-    # TODO, add update method
 
     private
 

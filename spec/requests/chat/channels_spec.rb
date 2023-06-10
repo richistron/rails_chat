@@ -108,4 +108,56 @@ describe Chat::ChannelsController, type: :request do
       end
     end
   end
+
+  context 'PATCH /update' do
+    context '200' do
+      let(:channel) { create(:chat_channel) }
+      before do
+        channel.reload
+        patch chat_channel_path(channel.uuid, params: { channel: { name: 'not memes' } })
+      end
+
+      it 'success' do
+        expect(@response).to have_http_status(200)
+      end
+
+      it 'response' do
+        body = JSON.parse(@response.body)
+        expect(body['name']).to eq('not memes')
+      end
+
+      it 'included fields' do
+        included_fields(JSON.parse(@response.body))
+      end
+    end
+
+    context '400' do
+      let(:channel) { create(:chat_channel) }
+      before do
+        channel.reload
+        channel2 = create(:chat_channel2)
+        patch chat_channel_path(channel.uuid, params: { channel: { name: channel2.name } })
+      end
+
+      it 'status code' do
+        expect(@response).to have_http_status(400)
+      end
+
+      context 'response body' do
+        let(:body) { JSON.parse(@response.body) }
+
+        it 'errors key' do
+          expect(body).to have_key('errors')
+        end
+
+        it 'contains name key' do
+          expect(body['errors']).to have_key('name')
+        end
+
+        it 'name is already taken' do
+          expect(body['errors']['name'].first).to eq('has already been taken')
+        end
+      end
+    end
+  end
 end

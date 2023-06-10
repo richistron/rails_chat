@@ -5,4 +5,9 @@ FactoryBot.define do
     name { 'general' }
     archived { false }
   end
+
+  factory :chat_channel2, class: 'Chat::Channel' do
+    name { 'memes' }
+    archived { false }
+  end
 end
