@@ -50,7 +50,7 @@ module Chat
     private
 
     def channel
-      @channel ||= Chat::Channel.all_active.find_by_uuid channel_uuid
+      @channel ||= Chat::Channel.all_active.find_by(uuid: channel_uuid)
     end
 
     def channel_params

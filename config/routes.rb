@@ -8,4 +8,6 @@ Rails.application.routes.draw do
   namespace :chat do
     resources :channels
   end
+
+  post 'auth/login'
 end
