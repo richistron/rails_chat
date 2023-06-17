@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_10_063516) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_17_050206) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string "token"
+    t.bigint "user_id", null: false
+    t.datetime "expiration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_api_keys_on_token", unique: true
+    t.index ["user_id"], name: "index_api_keys_on_user_id"
+  end
 
   create_table "chat_channels", force: :cascade do |t|
     t.string "name", limit: 50
@@ -35,4 +45,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_10_063516) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "api_keys", "users"
 end
