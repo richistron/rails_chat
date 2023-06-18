@@ -189,6 +189,7 @@ GEM
       parser (>= 3.2.1.0)
     ruby-progressbar (1.13.0)
     thor (1.2.2)
+    timecop (0.9.6)
     timeout (0.3.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -211,6 +212,7 @@ DEPENDENCIES
   rails (~> 7.0.5)
   rspec-rails (~> 6.0.0)
   rubocop
+  timecop
   tzinfo-data
 
 RUBY VERSION

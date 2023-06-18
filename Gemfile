@@ -45,6 +45,7 @@ group :development, :test do
   gem 'nyan-cat-formatter'
   gem 'rspec-rails', '~> 6.0.0'
   gem 'rubocop'
+  gem 'timecop'
 end
 
 group :development do
