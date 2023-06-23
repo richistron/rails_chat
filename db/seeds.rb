@@ -9,7 +9,7 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 if ENV['RAILS_ENV'] == 'development'
-  User.create! username: 'richstron', password: 'panchito', password_confirmation: 'panchito',
+  User.create! username: 'richistron', password: 'panchito', password_confirmation: 'panchito',
                is_admin: true, uuid: '62010a9f-f6a0-4d2a-8a06-15ba49281b61'
   Chat::Channel.create! name: 'general'
 end

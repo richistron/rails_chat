@@ -2,7 +2,9 @@
 
 module Chat
   class ChannelsController < ApplicationController
+    include ApiAuthenticable
     before_action :channel, only: %i[show update delete]
+    before_action :authenticate!
 
     def index
       channels ||= Chat::Channel.all_active.limit(10)
