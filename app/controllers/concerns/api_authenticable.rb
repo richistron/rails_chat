@@ -15,7 +15,7 @@ module ApiAuthenticable
 
       current_api_key = ApiKey.active_keys.find_by(token:)
       if current_api_key && ActiveSupport::SecurityUtils.secure_compare(token, current_api_key.token)
-        @current_user = @current_api_key.user
+        @current_user = current_api_key.user
       end
     end
   end

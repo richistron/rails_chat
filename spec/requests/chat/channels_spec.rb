@@ -8,10 +8,15 @@ describe Chat::ChannelsController, type: :request do
     expect(chat_channel).not_to include('id', 'created_at', 'updated_at')
   end
 
+  let(:headers) do
+    api_key = create(:api_key)
+    { 'Authorization' => "Bearer #{api_key.token}" }
+  end
+
   context 'GET /index' do
     before do
       create :chat_channel
-      get chat_channels_path
+      get chat_channels_path, headers:
     end
 
     let(:body) { JSON.parse @response.body }
@@ -36,7 +41,7 @@ describe Chat::ChannelsController, type: :request do
   context 'POST /create' do
     context 'success' do
       before do
-        post chat_channels_path, params: { channel: { name: 'Memes' } }
+        post chat_channels_path, params: { channel: { name: 'Memes' } }, headers:
       end
 
       it '201 status' do
@@ -55,7 +60,7 @@ describe Chat::ChannelsController, type: :request do
     context 'invalid request' do
       context 'invalid params' do
         before do
-          post chat_channels_path, params: { channel: { foo: 'bar' } }
+          post chat_channels_path, params: { channel: { foo: 'bar' } }, headers:
         end
         let(:body) { JSON.parse(@response.body) }
 
@@ -76,7 +81,7 @@ describe Chat::ChannelsController, type: :request do
 
       before do
         chat_channel.reload # loads uuid
-        get chat_channel_path(chat_channel.uuid)
+        get chat_channel_path(chat_channel.uuid), headers:
       end
 
       it 'loads channel' do
@@ -101,7 +106,7 @@ describe Chat::ChannelsController, type: :request do
     end
 
     context 'not found' do
-      before { get chat_channel_path('uuid-123456') }
+      before { get chat_channel_path('uuid-123456'), headers: }
 
       it '404 status' do
         expect(@response).to have_http_status(404)
@@ -114,7 +119,7 @@ describe Chat::ChannelsController, type: :request do
       let(:channel) { create(:chat_channel) }
       before do
         channel.reload
-        patch chat_channel_path(channel.uuid, params: { channel: { name: 'not memes' } })
+        patch chat_channel_path(channel.uuid, params: { channel: { name: 'not memes' } }), headers:
       end
 
       it 'success' do
@@ -136,7 +141,7 @@ describe Chat::ChannelsController, type: :request do
       before do
         channel.reload
         channel2 = create(:chat_channel2)
-        patch chat_channel_path(channel.uuid, params: { channel: { name: channel2.name } })
+        patch chat_channel_path(channel.uuid, params: { channel: { name: channel2.name } }), headers:
       end
 
       it 'status code' do
@@ -168,7 +173,7 @@ describe Chat::ChannelsController, type: :request do
       channel.uuid
     end
 
-    before { delete chat_channel_path(uuid) }
+    before { delete chat_channel_path(uuid), headers: }
 
     it 'status 200' do
       expect(@response).to have_http_status(200)
@@ -180,7 +185,7 @@ describe Chat::ChannelsController, type: :request do
     end
 
     context 'does not returns deleted items anymore' do
-      before { get chat_channel_path(uuid) }
+      before { get chat_channel_path(uuid), headers: }
 
       it 'not found' do
         expect(@response).to have_http_status(404)
