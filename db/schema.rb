@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_17_050206) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_24_182340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -34,6 +34,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_17_050206) do
     t.index ["name"], name: "index_chat_channels_on_name", unique: true
   end
 
+  create_table "chat_messages", force: :cascade do |t|
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }
+    t.string "content", limit: 200
+    t.bigint "chat_channel_id", null: false
+    t.bigint "user_id", null: false
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_channel_id"], name: "index_chat_messages_on_chat_channel_id"
+    t.index ["user_id"], name: "index_chat_messages_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", limit: 30
     t.string "password_digest"
@@ -46,4 +58,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_17_050206) do
   end
 
   add_foreign_key "api_keys", "users"
+  add_foreign_key "chat_messages", "chat_channels"
+  add_foreign_key "chat_messages", "users"
 end
