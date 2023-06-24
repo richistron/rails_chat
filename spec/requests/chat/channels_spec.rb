@@ -9,7 +9,14 @@ describe Chat::ChannelsController, type: :request do
   end
 
   let(:headers) do
-    api_key = create(:api_key)
+    user = create :user
+    api_key = user.api_keys.create!
+    { 'Authorization' => "Bearer #{api_key.token}" }
+  end
+
+  let(:headers_admin) do
+    user = create :user, :admin
+    api_key = user.api_keys.create!
     { 'Authorization' => "Bearer #{api_key.token}" }
   end
 
@@ -41,7 +48,7 @@ describe Chat::ChannelsController, type: :request do
   context 'POST /create' do
     context 'success' do
       before do
-        post chat_channels_path, params: { channel: { name: 'Memes' } }, headers:
+        post chat_channels_path, params: { channel: { name: 'Memes' } }, headers: headers_admin
       end
 
       it '201 status' do
@@ -60,7 +67,7 @@ describe Chat::ChannelsController, type: :request do
     context 'invalid request' do
       context 'invalid params' do
         before do
-          post chat_channels_path, params: { channel: { foo: 'bar' } }, headers:
+          post chat_channels_path, params: { channel: { foo: 'bar' } }, headers: headers_admin
         end
         let(:body) { JSON.parse(@response.body) }
 
@@ -119,7 +126,7 @@ describe Chat::ChannelsController, type: :request do
       let(:channel) { create(:chat_channel) }
       before do
         channel.reload
-        patch chat_channel_path(channel.uuid, params: { channel: { name: 'not memes' } }), headers:
+        patch chat_channel_path(channel.uuid, params: { channel: { name: 'not memes' } }), headers: headers_admin
       end
 
       it 'success' do
@@ -141,7 +148,7 @@ describe Chat::ChannelsController, type: :request do
       before do
         channel.reload
         channel2 = create(:chat_channel2)
-        patch chat_channel_path(channel.uuid, params: { channel: { name: channel2.name } }), headers:
+        patch chat_channel_path(channel.uuid, params: { channel: { name: channel2.name } }), headers: headers_admin
       end
 
       it 'status code' do
@@ -173,7 +180,7 @@ describe Chat::ChannelsController, type: :request do
       channel.uuid
     end
 
-    before { delete chat_channel_path(uuid), headers: }
+    before { delete chat_channel_path(uuid), headers: headers_admin }
 
     it 'status 200' do
       expect(@response).to have_http_status(200)

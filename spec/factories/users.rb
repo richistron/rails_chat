@@ -10,6 +10,7 @@ FactoryBot.define do
 
     trait :admin do
       username { 'redditmod' }
+      uuid { 'uuid-admin-123' }
       is_admin { true }
     end
   end

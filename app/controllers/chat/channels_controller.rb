@@ -4,7 +4,8 @@ module Chat
   class ChannelsController < ApplicationController
     include ApiAuthenticable
     before_action :channel, only: %i[show update delete]
-    before_action :authenticate!
+    before_action :authenticate!, only: %i[index show]
+    before_action :authenticate_admin!, except: %i[index show]
 
     def index
       channels ||= Chat::Channel.all_active.limit(10)
@@ -41,7 +42,6 @@ module Chat
     end
 
     def destroy
-      # TODO, only allow admins to archive channels
       if channel.soft_delete
         render status: :ok
       else
