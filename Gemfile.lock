@@ -117,7 +117,7 @@ GEM
     parser (3.2.2.1)
       ast (~> 2.4.1)
     pg (1.5.3)
-    puma (5.6.5)
+    puma (5.6.7)
       nio4r (~> 2.0)
     racc (1.6.2)
     rack (2.2.7)
@@ -208,7 +208,7 @@ DEPENDENCIES
   factory_bot_rails
   nyan-cat-formatter
   pg (~> 1.1)
-  puma (~> 5.0)
+  puma (~> 5.6)
   rails (~> 7.0.5)
   rspec-rails (~> 6.0.0)
   rubocop
